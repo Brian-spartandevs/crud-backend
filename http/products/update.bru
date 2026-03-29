@@ -1,0 +1,23 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/products/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Updated Laptop",
+    "price": 1099.99,
+    "stock": 5
+  }
+}
