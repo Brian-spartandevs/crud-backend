@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
@@ -16,6 +17,7 @@ const limiter = rateLimit({
   message: { error: "Demasiadas solicitudes, intenta de nuevo más tarde" },
 });
 
+app.use(cors());
 app.use(limiter);
 app.use(express.json());
 
