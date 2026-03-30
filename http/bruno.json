@@ -1,0 +1,23 @@
+{
+  "version": "1",
+  "name": "CRUD Backend API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "presets": {
+    "baseUrl": "http://localhost:3000/api",
+    "responseFormat": "json"
+  },
+  "auth": {
+    "mode": "bearer",
+    "bearer": {
+      "token": ""
+    }
+  },
+  "scripts": {
+    "pre-request": "// Pre-request scripts go here",
+    "post-response": "// Post-response scripts go here"
+  }
+}

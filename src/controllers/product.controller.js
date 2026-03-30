@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../lib/prisma.js";
 
 export const create = async (req, res, next) => {
   try {
@@ -16,12 +14,40 @@ export const create = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   try {
-    const products = await prisma.product.findMany({
-      where: { userId: req.user.id },
-      orderBy: { createdAt: "desc" },
-    });
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 10));
+    const skip = (page - 1) * limit;
+    const search = req.query.search?.trim() || "";
 
-    return res.json(products);
+    const where = {
+      userId: req.user.id,
+      ...(search && {
+        OR: [
+          { name: { contains: search } },
+          { description: { contains: search } },
+        ],
+      }),
+    };
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return res.json({
+      data: products,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     next(error);
   }
